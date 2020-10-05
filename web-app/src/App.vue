@@ -1,14 +1,19 @@
 <template>
-    <EventTable />
+    <div>
+        <GroupHome />
+        <EventTable />
+    </div>
 </template>
 
 <script>
 import EventTable from './components/EventTable.vue'
+import GroupHome from './components/GroupHome.vue'
 
 export default {
     name: 'App',
     components: {
-        EventTable
+        EventTable,
+        GroupHome,
     }
 }
 </script>

@@ -3,7 +3,7 @@
 import random
 import string
 from datetime import datetime, timedelta
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, url_for
 
 
 app = Flask(__name__)
@@ -43,5 +43,28 @@ def get_events():
     }
     events['events'] = sorted(events['events'], key=lambda x: x['start'])
     response = make_response(events)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
+
+@app.route('/api/group/<group_id>/home')
+def get_group_home(group_id):
+    """Return a JSON object containing the group's name, welcome
+    message, about text, and a URL to its icon."""
+    filename = random.choice([
+        '35411434.png',
+        '57271680.png',
+        '62537138.png',
+    ])
+    group_info = {
+        'name' : 'Group ' + str(random.randint(1000, 9999)),
+        'welcome' : ' '.join(''.join(
+            random.choices(string.ascii_lowercase, k=5)) for _ in range(50)),
+        'about' : ' '.join(''.join(
+            random.choices(string.ascii_lowercase, k=5)) for _ in range(50)),
+        'icon' : ('http://localhost:5000' +
+            url_for('static', filename=filename))
+    }
+    response = make_response(group_info)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response

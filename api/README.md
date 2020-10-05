@@ -23,3 +23,15 @@ the following attributes.
 | title     | `string` | Title               |
 | start     | `string` | Start date and time |
 | end       | `string` | End date and time   |
+
+### Read group homepages
+
+Send a GET request to `/api/group/:group_id:/home`. The API will return
+a JSON object with the following attributes.
+
+| Attribute | Type     | Description             |
+| --------- | -------- | ----------------------- |
+| name      | `string` | Group name              |
+| welcome   | `string` | Welcome message         |
+| about     | `string` | About text              |
+| icon      | `string` | URL to the group's icon |

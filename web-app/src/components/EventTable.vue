@@ -1,22 +1,24 @@
 <template>
-    <table>
-        <thead>
-            <tr>
-                <th>Event</th>
-                <th>Start</th>
-                <th>End</th>
-            </tr>
-        </thead>
-        <tbody>
-            <EventRow
-                v-for="event in events"
-                :key="event.id"
-                v-bind:title="event.title"
-                v-bind:start="event.start"
-                v-bind:end="event.end"
-            />
-        </tbody>
-    </table>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Start</th>
+                    <th>End</th>
+                </tr>
+            </thead>
+            <tbody>
+                <EventRow
+                    v-for="event in events"
+                    :key="event.id"
+                    v-bind:title="event.title"
+                    v-bind:start="event.start"
+                    v-bind:end="event.end"
+                />
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
@@ -49,10 +51,13 @@ export default {
 </script>
 
 <style scoped>
-table {
+div {
+    box-sizing: border-box;
+    padding: 10px;
     background-color: bisque;
+}
+table {
     width: 100%;
-    border-radius: 5px;
 }
 th {
     padding: 5px;
