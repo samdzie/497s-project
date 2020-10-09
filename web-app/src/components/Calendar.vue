@@ -1,23 +1,21 @@
 <template>
     <div id="calendar">
         <div id="margin">
-            <div class="column-head"></div>
-            <div
-                class="time-chunk"
-                v-for="chunk in chunks"
-                v-bind:key="chunk"
+            <span
+                class="label"
+                v-for="time in times"
+                v-bind:key="time"
+                v-bind:style="{ top: times.indexOf(time) * 40 + 30 + 'px' }"
             >
-                {{ chunk }}
-            </div>
+                {{ time }}
+            </span>
         </div>
         <div class="column" v-for="day in days" v-bind:key="day">
             <div class="column-head">{{ day }}</div>
             <div
-                class="time-chunk"
-                v-for="chunk in chunks"
-                v-bind:key="chunk"
-            >
-            </div>
+                class="column-body"
+                v-bind:style="{ height: times.length * 40 + 'px'}"
+            ></div>
         </div>
     </div>
 </template>
@@ -36,53 +34,59 @@ export default {
                 'Friday',
                 'Saturday'
             ],
-            chunks: [],
+            times: [
+                '9 AM',
+                '10 AM',
+                '11 AM',
+                '12 PM',
+                '1 PM',
+                '2 PM',
+                '3 PM',
+                '4 PM',
+                '5 PM',
+                '6 PM',
+                '7 PM',
+                '8 PM',
+                '9 PM'
+            ]
         };
     },
-    beforeMount() {
-        this.generateChunks();
-    },
-    methods: {
-        generateChunks() {
-            let chunks = [];
-            const N = 24;
-            for (let i = 0; i <= N; i++) {
-                let hour = (i + 11) % 12 + 1;
-                let chunk = (i < N / 2) ? hour + ':00 AM' : hour + ':00 PM';
-                chunks.push(chunk);
-            }
-            this.chunks = chunks;
-        },
-    }
 }
 </script>
 
 <style scoped>
 #calendar {
-    --time-chunk-height: 30px;
     background-color: lightblue;
     display: flex;
     box-sizing: border-box;
     padding: 10px;
 }
 #margin, .column {
-    border: 1px solid black;
+    position: relative;
+    background-color: white;
 }
 #margin {
     width: 10%;
 }
 .column {
     width: calc(90% / 7);
-    border-left: none;
+    border-left: 1px solid lightgray;
 }
 .column-head {
     height: 20px;
     margin: 10px 0px;
     font-weight: bold;
 }
-.time-chunk {
-    height: var(--time-chunk-height);
-    border-top: 1px solid black;
-    line-height: var(--time-chunk-height);
+.column-body {
+    background: repeating-linear-gradient(
+        to bottom,
+        lightgray 0px 1px,
+        white 1px 40px
+    )
+}
+.label {
+    position: absolute;
+    right: 5px;
+    line-height: 21px;
 }
 </style>
