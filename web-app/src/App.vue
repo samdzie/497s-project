@@ -1,17 +1,20 @@
 <template>
     <div>
         <GroupHome />
+        <Calendar />
         <EventTable />
     </div>
 </template>
 
 <script>
+import Calendar from './components/Calendar.vue'
 import EventTable from './components/EventTable.vue'
 import GroupHome from './components/GroupHome.vue'
 
 export default {
     name: 'App',
     components: {
+        Calendar,
         EventTable,
         GroupHome,
     }
