@@ -1,13 +1,18 @@
 """A Flask API for the web app."""
-
+import os
 import random
 import string
 from datetime import datetime, timedelta
 from flask import Flask, jsonify, make_response, url_for
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]),'homepages'))
+import db
 
 app = Flask(__name__)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../homepages/db.sqlite3'
+db.db.init_app(app)
 
 def random_event():
     """Generate a random event object.
@@ -30,6 +35,7 @@ def random_event():
 
 @app.route('/api')
 def hello_world():
+
     """A welcome message to verify a connection to the API."""
     return 'Welcome to the API!'
 
@@ -68,3 +74,8 @@ def get_group_home(group_id):
     response = make_response(group_info)
     response.headers['Access-Control-Allow-Origin'] = '*'
     return response
+
+
+
+if __name__ == "__main__":
+    app.run()
