@@ -30,7 +30,7 @@ export default {
         EventRow
     },
     props: {
-        someProp: String
+        groupID: String,
     },
     data: function() {
         return {
@@ -42,7 +42,9 @@ export default {
     },
     methods: {
         async getEvents() {
-            const resp = await fetch('http://localhost:5000/api/events');
+            const baseURL = 'http://localhost:5000'
+            const resp = await fetch(
+                baseURL + '/api/group/' + this.groupID + '/events');
             const json = await resp.json();
             this.events = json.events.slice();
         }
