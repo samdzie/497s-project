@@ -15,6 +15,9 @@ WORKDIR /srv/template
 # srv/template directory in the container
 COPY . .
 
+# Mount a volume to persist database across builds
+VOLUME /srv/template/db
+
 # Install pipenv
 RUN ["pip", "install", "pipenv"]
 

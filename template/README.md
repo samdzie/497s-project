@@ -45,7 +45,26 @@ descriptive tag for your service.
 
 1. Install and start [Docker][2], if you have not yet done so.
 2. Run `docker build -t template .`
-3. Run `docker run -p 5000:5000 template`
+3. Run `docker run -dp 5000:5000 template`
+    - Alternatively, run `docker run --volumes-from [NAME] -dp 5000:5000
+    template` to use the same volumes as the container with name
+    `[NAME]`.
+    - A container's name can be viewed by running `docker container ls`,
+    listed under the "NAMES" column. It is usually in the form of two
+    random words (e.g., exciting_wright, fervent_nightingale).
+
+### Initializing a SQLAlchemy database
+If your service contains a SQLAlchemy database, its tables must first be
+created before any work can be done with them. Assuming the database
+is assigned to variable `db` in Python module `app.py`, run the
+following commands to create the tables.
+
+1. Run `docker container ls` to find the name of your container.
+    - It is listed under the column "NAMES" and is usually in the form
+    of two random words (e.g., exciting_wright, fervent_nightingale).
+2. Run `docker exec -it [NAME] python`
+3. From the Python shell, run `from app import db`
+4. Run `db.create_all()`
 
 
 [1]: https://pypi.org/project/pipenv/
