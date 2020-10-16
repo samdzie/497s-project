@@ -28,6 +28,15 @@ developer:
 1. Install pipenv, if you have not yet done so: `pip install pipenv`
 2. Install dependencies: `pipenv install`
 
+### Using pipenv with VS Code
+To use pipenv for VS Code's Python interpreter, follow the below
+instructions.
+
+1. In VS Code, press `Ctrl + Shift + P` to open a dropdown menu.
+2. Select "Python: Select Interpreter" from the menu.
+3. Select the virtual environment interpreter.
+    - For example, it may appear as
+    "Python 3.8.0 64-bit ('template-9m8Lz9_6': venv)"
 
 ## Dockerfile
 [Docker][2] is a tool for creating containers, which are essentially
