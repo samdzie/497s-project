@@ -29,6 +29,10 @@ class Album(db.Model):
     artist = db.Column(db.String(80), nullable=False)
 
 
+# Create all tables; all models must be defined above this line
+db.create_all()
+
+
 class AlbumSchema(SQLAlchemySchema):
     class Meta:
         model = Album # Generate the schema from the above Album model
@@ -76,6 +80,47 @@ def get_album(album_id):
     # If no album matches album_id, respond HTTP 404
     if album is None:
         abort(404)
+    # Serialize the album as a JSON object and return it
+    schema = AlbumSchema()
+    return jsonify(schema.dump(album))
+
+
+@app.route('/album/<album_id>', methods=['PUT'])
+def update_album(album_id):
+    """Update the album with the given ID."""
+    # If the request has no JSON, respond HTTP 400
+    json = request.json
+    if json is None:
+        abort(400)
+    # Filter albums matching album_id and select the first one found
+    album = Album.query.filter_by(id=album_id).first()
+    # If no album matches album_id, respond HTTP 404
+    if album is None:
+        abort(404)
+    # Update the title and/or artist, if present in JSON
+    if 'title' in json:
+        album.title = json.get('title')
+    if 'artist' in json:
+        album.artist = json.get('artist')
+    # Add it to the database
+    db.session.add(album)
+    db.session.commit()
+    # Serialize the album as a JSON object and return it
+    schema = AlbumSchema()
+    return jsonify(schema.dump(album))
+
+
+@app.route('/album/<album_id>', methods=['DELETE'])
+def delete_album(album_id):
+    """Delete the album with the given ID."""
+    # Filter albums matching album_id and select the first one found
+    album = Album.query.filter_by(id=album_id).first()
+    # If no album matches album_id, respond HTTP 404
+    if album is None:
+        abort(404)
+    # Delete it from the database
+    db.session.delete(album)
+    db.session.commit()
     # Serialize the album as a JSON object and return it
     schema = AlbumSchema()
     return jsonify(schema.dump(album))
