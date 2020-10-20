@@ -1,70 +1,117 @@
-import flask
-from flask import request, jsonify
-import sqlite3
-from sqlite3 import Error
+"""
 
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+A group event database. Making, and storing JSON objects in SQLAlchemy.
 
-#Need to figure out how to hook up to Postman
-#Currently needs a preexisting events.db on local drive
-
-@app.route('/events', methods =['GET'])
-def home():
-    #Welcome screen
-    return '''<h1>Flask Group events database api</h1>
-    <p>A WIP API for group events</p>'''
+"""
 
 
-@app.route('/events/all', methods=['GET'])
-def api_all():
-    #Connects to a preexisting events.db and returns all events made
-    Database = 'events.db'
-    try:
-            conn = sqlite3.connect(Database)
-            cursor = conn.cursor()
-            all_events = cursor.execute('SELECT * FROM EventsTable;').fetchall()
+from flask import Flask, abort, jsonify, request
+from flask_sqlalchemy import SQLAlchemy
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, auto_field
 
-    except Error as e:
-        print(e)
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+# Do not track modifications to save overhead
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-    return jsonify(all_events)
+class Events(db.Model):
+    """A SQLAlchemy model representing a table of Events """
+    # id is an integer and serves as a primary key (i.e., unique identifier)
+    id = db.Column(db.Integer, primary_key = True)
+    # Title and description are strings that cannot be null 
+    title = db.Column(db.String(80), nullable = False)
+    description = db.Column(db.String(80), nullable = False)
+
+db.create_all()
+
+class EventsSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Events # Generate the schema from the above Events model
+        load_instance = True
+
+    # Automatically fill these fields
+    id = auto_field()
+    title = auto_field()
+    description = auto_field()
+
+@app.route('/')
+def hello_world():
+    """Returns a string for testing """
+    return 'Hello World!'
+
+@app.route('/events', methods = ['POST'])
+def create_events():
+    """Creates an Events table from a POSTed JSON object. """
+    # If the request has no JSON, respond HTTP 400
+    json = request.json 
+    if json is None:
+        abort(400)
+    # If the JSON exists but has no title or artist, respond HTTP 400
+    title = json.get('title')
+    description = json.get('description')
+
+    if title is None or description is None:
+        abort(400)
+    
+    # Create the Events object
+    events = Events(title = title, description = description)
+    # Add it to the database
+    db.session.add(events)
+    db.session.commit()
+    # Serialize the album as a JSON object and return it
+    schema - EventsSchema()
+    return jsonify(schema.dump(events))
+
+@app.route('/events/<events_id>')
+def get_events(events_id):
+    """Returns the events with the given id as a JSON object. """
+    # Filter events matching events_id and select the first one found
+    events = Events.query.filter_by(id=events_id).first()
+    # If no events matches album_id, respond HTTP 404
+    if events is None:
+        abort(404)
+    # Serialize the album as a JSON object and return it
+    schema = EventsSchema()
+    return jsonify(schema.dump(events))
 
 
-@app.route('/events/createtable', methods=['POST'])
-def creat_table():
-    #Creates a table
-    Database = 'events.db'
-    conn = sqlite3.connect(Database)
-    conn.execute(''' 
-    CREATE TABLE EventsTable (
-        ID int,
-        Subject text,
-        Description text
-    );
-    ''')
-    conn.close()
+@app.route('/events/<events_id>', methods=['PUT'])
+def update_events():
+    """ Update the events with the given ID. """
+    #If the request has no JSON, respond HTTP 400
+    json = request.json
+    if json is None:
+        abort(400)
+    # Filter events matching events_id and select the first one found
+    events = Events.query.filter_by(id = events_id).first()
+    # If no events matches events_id, respond HTTP 404
+    if album is None:
+        abort(404)
+    # Update the title and/or description, if present in JSON
+    if 'title' in json: 
+        events.title = json.get('title')
+    if 'description' in json:
+        events.description = json.get('description')
+    # Add it to the database
+    db.session.add(events)
+    db.session.commit()
+    # Serialize the events as a JSON object and return it
+    schema = EventsSchema()
+    return jsonify(schema.dump(events))
 
 
-# @app.route('/events/newevent', methods=['POST'])
-# def creat_event():
-#     #Creates an event
-#     #Make an html file for the user to fill out for events??
-#     Database = 'events.db'
-#     conn = sqlite3.connect(Database)
-#     conn.execute('INSERT ')
-
-
-#Update event
-#Delete event
-
-
-@app.errorhandler(404)
-def page_not_found(e):
-    #Error message if resource isn't found
-    return '''
-    <h1>Error 404 Page not found</h1>
-    <p>Page resources could not be found. </p>
-    ''', 404
-
-app.run()
+@app.route('/events/<events_id>', methods = ['DELETE'])
+def delete_event(events_id):
+    """ Delete the event with the given ID. """
+    # Filter events matching events_id and select the first one found
+    events = Events.query.filter_by(id = events_id).first()
+    # If no events matches events_id, respond HTTP 404
+    if events is None:
+        abort(404)
+    # Delete it from database
+    db.session.delete(events)
+    db.session.commit()
+    # Serialize the events as a JSON object and return it
+    schema = EventsSchema()
+    return jsonify(schema.dump(events))
