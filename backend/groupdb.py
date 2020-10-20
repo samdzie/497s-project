@@ -1,6 +1,7 @@
 """
 
-A group event database. Making, and storing JSON objects in SQLAlchemy.
+A group event database. Creating, reading, updating, and deleteing JSON objects in SQLAlchemy.
+
 
 """
 
@@ -22,6 +23,8 @@ class Events(db.Model):
     # Title and description are strings that cannot be null 
     title = db.Column(db.String(80), nullable = False)
     description = db.Column(db.String(80), nullable = False)
+    # Maybe additional information like including participants? 
+    # Participants could be simple strings like title or something like a user id
 
 db.create_all()
 
