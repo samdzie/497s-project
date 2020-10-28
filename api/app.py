@@ -34,8 +34,8 @@ def hello_world():
     return 'Welcome to the API!'
 
 
-@app.route('/api/events')
-def get_events():
+@app.route('/api/group/<group_id>/events')
+def get_events(group_id):
     """Return a list of all stored events in ascending order of start
     time."""
     events = {
@@ -57,7 +57,7 @@ def get_group_home(group_id):
         '62537138.png',
     ])
     group_info = {
-        'name' : 'Group ' + str(random.randint(1000, 9999)),
+        'name' : 'Group ' + group_id,
         'welcome' : ' '.join(''.join(
             random.choices(string.ascii_lowercase, k=5)) for _ in range(50)),
         'about' : ' '.join(''.join(

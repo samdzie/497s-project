@@ -1,7 +1,19 @@
 <template>
     <div>
-        <GroupHome />
-        <EventTable />
+        <form v-on:submit.prevent="handleSubmit">
+            <input id="groupIDInput" placeholder="Enter group ID">
+            <button type="submit">View Group</button>
+        </form>
+        <div id="content" v-if="groupID">
+            <GroupHome
+                v-bind:groupID="groupID"
+                v-bind:key="groupID"
+            />
+            <EventTable
+                v-bind:groupID="groupID"
+                v-bind:key="groupID"
+            />
+        </div>
     </div>
 </template>
 
@@ -14,7 +26,17 @@ export default {
     components: {
         EventTable,
         GroupHome,
-    }
+    },
+    data: function() {
+        return {
+            groupID: undefined,
+        };
+    },
+    methods: {
+        handleSubmit() {
+            this.groupID = document.getElementById("groupIDInput").value;
+        },
+    },
 }
 </script>
 
@@ -29,5 +51,11 @@ export default {
     margin-left: auto;
     margin-right: auto;
     width: 800px;
+}
+form {
+    margin: 10px;
+}
+form button {
+    margin-left: 10px;
 }
 </style>

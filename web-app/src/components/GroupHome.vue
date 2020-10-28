@@ -20,6 +20,9 @@
 <script>
 export default {
     name: 'GroupHome',
+    props: {
+        groupID: String,
+    },
     data: function() {
         return {
             name: '',
@@ -33,7 +36,9 @@ export default {
     },
     methods: {
         async getHome() {
-            const resp = await fetch('http://localhost:5000/api/group/1/home');
+            const baseURL = 'http://localhost:5000'
+            const resp = await fetch(
+                baseURL + '/api/group/' + this.groupID + '/home');
             const json = await resp.json();
             this.name = json.name;
             this.welcome = json.welcome;
