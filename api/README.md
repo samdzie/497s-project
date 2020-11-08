@@ -2,6 +2,15 @@
 
 This API serves as the gateway to the backend for the desktop web UI.
 
+## Overview
+
+The API is a backend for the [Web UI](../web-app) frontend. It exposes
+endpoints that the Web UI can use to obtain data from the rest of the
+system, including group events and homepage information. The other
+services are connected by importing them as Python packages and
+calling the package functions to interact with the underlying
+databases. The API itself is implemented with Flask.
+
 ## Build
 
 1. `cd` into this directory.
